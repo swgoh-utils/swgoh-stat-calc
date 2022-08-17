@@ -380,6 +380,10 @@ Parameters provided here can be missing in the original unit.
     gear: 1-12,
     equipped: "all" || "none" || [1,2,3,4,5,6], // See Below
     relic: 1-9 // 1='locked', 2='unlocked', 3=R1, 4=R2, ...9=R7
+    skills: "max" || "maxNoZeta" || 1-8, // See below
+    modRarity: 1-7,
+    modLevel: 1-15,
+    modTier: 1-5,
   },
   ship: { // used when calculating ship stats
     rarity: 1-7,
@@ -393,6 +397,7 @@ Parameters provided here can be missing in the original unit.
     skills: "max" || "maxNoZeta" || 1-8, // See Below
     modRarity: 1-7,
     modLevel: 1-15,
+    modTier: 1-5,
     relic: 1-9 // 1='locked', 2='unlocked', 3=R1, 4=R2, ...9=R7
   }
 }

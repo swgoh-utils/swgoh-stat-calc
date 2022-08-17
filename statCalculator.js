@@ -39,6 +39,9 @@ module.exports = {
   }
 }
 
+const DEFAULT_MOD_TIER = 5;
+const DEFAULT_MOD_LEVEL = 15;
+const DEFAULT_MOD_PIPS = 6;
 
 function calcRosterStats(units, options = {}) {
   let count = 0;
@@ -709,6 +712,7 @@ function useValuesChar(char, useValues) {
     equippedStatMod: char.equippedStatMod,
     relic: char.relic,
     skills: char.skill.map( skill => { return { id: skill.id, tier: skill.tier + 2 }; })
+    // TODO set purchasedAbilityId
   };
   if (!useValues) return char;
 
@@ -720,8 +724,21 @@ function useValuesChar(char, useValues) {
     equipped: char.gear,
     mods: char.mods,
     equippedStatMod: char.equippedStatMod,
-    relic: useValues.char.relic ? {currentTier: useValues.char.relic } : char.relic
+    relic: useValues.char.relic ? {currentTier: useValues.char.relic } : char.relic,
+    skills: setSkills(char.defId, useValues.char.skills || char.skills || [])
+    // TODO set purchasedAbilityId
   };
+
+  if (useValues.char.modRarity || useValues.char.modLevel || useValues.char.modTier) {
+    unit.mods = [];
+    for (let i=0; i<6; i++) {
+      unit.mods.push({
+        pips: useValues.char.modRarity || DEFAULT_MOD_PIPS,
+        level: useValues.char.modLevel || DEFAULT_MOD_LEVEL,
+        tier: useValues.char.modTier || DEFAULT_MOD_TIER
+      });
+    }
+  }
 
   if (useValues.char.equipped == "all") {
     unit.equipped = [];
@@ -806,7 +823,11 @@ function useValuesShip(ship, crew, useValues) {
     if (useValues.crew.modRarity || useValues.crew.modLevel) {
       char.mods = [];
       for (let i=0; i<6; i++) {
-        char.mods.push({ pips: useValues.crew.modRarity || 6, level: useValues.crew.modLevel || 15 });
+        char.mods.push({
+          pips: useValues.crew.modRarity || DEFAULT_MOD_PIPS,
+          level: useValues.crew.modLevel || DEFAULT_MOD_LEVEL,
+          tier: useValues.crew.modTier || DEFAULT_MOD_TIER
+        });
       }
     }
 
@@ -815,14 +836,15 @@ function useValuesShip(ship, crew, useValues) {
 
   return {ship: ship, crew: chars};
 
-  function setSkills( unitID, val ) {
-    if (val == 'max')
-      return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: skill.maxTier}; });
-    else if (val == 'maxNoZeta')
-      return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: skill.maxTier - (skill.isZeta ? 1 : 0)}; });
-    else if ('number' == typeof val) // expecting an integer, 1-8, for skill level to use
-      return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: Math.min(val, skill.maxTier)}; });
-    else // expecting an array of skill objects
-      return val;
-  }
+}
+
+function setSkills( unitID, val ) {
+  if (val == 'max')
+    return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: skill.maxTier}; });
+  else if (val == 'maxNoZeta')
+    return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: skill.maxTier - (skill.isZeta ? 1 : 0)}; });
+  else if ('number' == typeof val) // expecting an integer, 1-8, for skill level to use
+    return unitData[ unitID ].skills.map(skill => { return {id: skill.id, tier: Math.min(val, skill.maxTier)}; });
+  else // expecting an array of skill objects
+    return val;
 }
