@@ -72,14 +72,20 @@ function calcRosterStats(units, options = {}) {
     ids.forEach( id => {
       units[ id ].forEach( unit => {
         if (unitData[ id ].combatType == 1) {
-          calcCharStats({
+          const tempUnit = {
             defId: id,
             rarity: unit.starLevel,
             level: unit.level,
             gear: unit.gearLevel,
             equipped: unit.gear.map( gearID => { return {equipmentId: gearID}; }),
             mods: unit.mods
-          }, options);
+          };
+          calcCharStats(tempUnit, options);
+          
+          // assign modified values from calcCharStats back to the original units
+          tempUnit.stats && (unit.stats = tempUnit.stats);
+          tempUnit.gp && (unit.gp = tempUnit.gp);
+          
           count++;
         }
       });
@@ -125,7 +131,7 @@ function calcShipStats(ship, crew, options = {}) {
       ship.stats = stats;
     }
 
-    if (calcGP || onlyGP) {
+    if (options.calcGP || options.onlyGP) {
       ship.gp = calcShipGP(ship, crew);
       stats.gp = ship.gp;
     }
