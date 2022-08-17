@@ -354,9 +354,11 @@ The *Default* explanations below are what is used when the related flag(s) are n
 ### Calculation control ###
 
 `calcGP: true`\
-Runs GP calculations along with stat calculations, and stores its value in the unit's `.gp` property.\
-The GP value will be inaccurate for `/units` style objects since it is missing values that are needed\
-for the GP calculation, such as relic level, skills, and whether the ultimate is unlocked for galactic\
+Runs GP calculations along with any specified stat calculations, and stores its value in the unit's
+`.gp` property, as well as in the `.stats` object as `.stats.gp`.
+
+The GP value will be inaccurate for `/units` style objects since it is missing values that are needed
+for the GP calculation, such as relic level, skills, and whether the ultimate is unlocked for galactic
 legends.
 
 `onlyGP: true`\

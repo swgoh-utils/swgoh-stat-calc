@@ -89,11 +89,7 @@ function calcRosterStats(units, options = {}) {
 function calcCharStats(char, options = {}) {
   char = useValuesChar(char, options.useValues);
 
-  if (options.calcGP || options.onlyGP) {
-    char.gp = calcCharGP(char);
-  }
-
-  let stats;
+  let stats = {};
   if (!options.onlyGP) {
     stats = getCharRawStats(char);
     stats = calculateBaseStats(stats, char.level, char.defId);
@@ -104,6 +100,11 @@ function calcCharStats(char, options = {}) {
     char.stats = stats;
   }
 
+  if (options.calcGP || options.onlyGP) {
+    char.gp = calcCharGP(char);
+    stats.gp = char.gp;
+  }
+
   return stats;
 }
 
@@ -111,12 +112,7 @@ function calcShipStats(ship, crew, options = {}) {
   try {
     ({ship, crew} = useValuesShip(ship, crew, options.useValues));
 
-    if (calcGP || onlyGP) {
-      ship.gp = calcShipGP(ship, crew);
-    }
-
-    let stats;
-
+    let stats = {};
     if (!options.onlyGP) {
       stats = getShipRawStats(ship, crew);
       stats = calculateBaseStats(stats, ship.level, ship.defId);
@@ -124,6 +120,11 @@ function calcShipStats(ship, crew, options = {}) {
       stats = renameStats(stats, options);
 
       ship.stats = stats;
+    }
+
+    if (calcGP || onlyGP) {
+      ship.gp = calcShipGP(ship, crew);
+      stats.gp = ship.gp;
     }
 
     return stats;
