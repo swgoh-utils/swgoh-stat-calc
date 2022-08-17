@@ -94,7 +94,7 @@ function calcCharStats(char, options = {}) {
   }
 
   let stats;
-  if (!onlyGP) {
+  if (!options.onlyGP) {
     stats = getCharRawStats(char);
     stats = calculateBaseStats(stats, char.level, char.defId);
     if (!options.withoutModCalc) { stats.mods = calculateModStats(stats.base, char); }
@@ -117,7 +117,7 @@ function calcShipStats(ship, crew, options = {}) {
 
     let stats;
 
-    if (!onlyGP) {
+    if (!options.onlyGP) {
       stats = getShipRawStats(ship, crew);
       stats = calculateBaseStats(stats, ship.level, ship.defId);
       stats = formatStats(stats, ship.level, options);
