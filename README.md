@@ -354,11 +354,13 @@ The *Default* explanations below are what is used when the related flag(s) are n
 ### Calculation control ###
 
 `calcGP: true`\
-Runs GP calculations along with stat calculations, and stores it's value in the unit's `.gp` property.\
-Only evaluated by the `.calcRosterStats()` and `.calcPlayerStats()` method calls, when not using the `/units` style objects.
+Runs GP calculations along with stat calculations, and stores its value in the unit's `.gp` property.\
+The GP value will be inaccurate for `/units` style objects since it is missing values that are needed\
+for the GP calculation, such as relic level, skills, and whether the ultimate is unlocked for galactic\
+legends.
 
 `onlyGP: true`\
-Implies calcGP and only applicable in the same API calls as calcGP. Skips all stat calculations and only calculates the GP.
+Implies calcGP. Skips all stat calculations and only calculates the GP.
 
 `withoutModCalc: true`\
 Speeds up character calculations by ignoring stats from mods.\

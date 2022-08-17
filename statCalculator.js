@@ -41,7 +41,6 @@ module.exports = {
 
 
 function calcRosterStats(units, options = {}) {
-  const calcGP = (options.calcGP || options.onlyGP);
   let count = 0;
   if (units.constructor === Array) { // units *should* be formatted like /player.roster
     let ships = [],
@@ -54,8 +53,7 @@ function calcRosterStats(units, options = {}) {
         ships.push( unit );
       } else { // is character
         crew[ defID ] = unit; // add to crew list to find quickly for ships
-        if (!options.onlyGP) unit.stats = calcCharStats(unit, options);
-        if (calcGP) unit.gp = calcCharGP( useValuesChar(unit, options.useValues) );
+        calcCharStats(unit, options);
       }
     });
     // get ship stats
@@ -63,11 +61,7 @@ function calcRosterStats(units, options = {}) {
       let defID = ship.defId || ship.definitionId.split(':')[0];
       if (!ship || !unitData[defID]) return;
       let crw = unitData[ defID ].crew.map(id => crew[id])
-      if (!options.onlyGP) ship.stats = calcShipStats(ship, crw, options);
-      if (calcGP) {
-        let {ship: s, crew: c} = useValuesShip(ship, crw, options.useValues);
-        ship.gp = calcShipGP(s, c);
-      }
+      calcShipStats(ship, crw, options);
     });
     count += units.length;
   } else { // units *should* be formated like /units or /roster
@@ -75,13 +69,14 @@ function calcRosterStats(units, options = {}) {
     ids.forEach( id => {
       units[ id ].forEach( unit => {
         if (unitData[ id ].combatType == 1) {
-          unit.stats = calcCharStats( { defId: id,
-                                        rarity: unit.starLevel,
-                                        level: unit.level,
-                                        gear: unit.gearLevel,
-                                        equipped: unit.gear.map( gearID => { return {equipmentId: gearID}; }),
-                                        mods: unit.mods
-                                      }, options);
+          calcCharStats({
+            defId: id,
+            rarity: unit.starLevel,
+            level: unit.level,
+            gear: unit.gearLevel,
+            equipped: unit.gear.map( gearID => { return {equipmentId: gearID}; }),
+            mods: unit.mods
+          }, options);
           count++;
         }
       });
@@ -90,23 +85,46 @@ function calcRosterStats(units, options = {}) {
 
   return count;
 }
+
 function calcCharStats(char, options = {}) {
   char = useValuesChar(char, options.useValues);
-  let stats = getCharRawStats(char);
-  stats = calculateBaseStats(stats, char.level, char.defId);
-  if (!options.withoutModCalc) { stats.mods = calculateModStats(stats.base, char); }
-  stats = formatStats(stats, char.level, options);
-  stats = renameStats(stats, options);
+
+  if (options.calcGP || options.onlyGP) {
+    char.gp = calcCharGP(char);
+  }
+
+  let stats;
+  if (!onlyGP) {
+    stats = getCharRawStats(char);
+    stats = calculateBaseStats(stats, char.level, char.defId);
+    if (!options.withoutModCalc) { stats.mods = calculateModStats(stats.base, char); }
+    stats = formatStats(stats, char.level, options);
+    stats = renameStats(stats, options);
+
+    char.stats = stats;
+  }
 
   return stats;
 }
+
 function calcShipStats(ship, crew, options = {}) {
   try {
     ({ship, crew} = useValuesShip(ship, crew, options.useValues));
-    let stats = getShipRawStats(ship, crew);
-    stats = calculateBaseStats(stats, ship.level, ship.defId);
-    stats = formatStats(stats, ship.level, options);
-    stats = renameStats(stats, options);
+
+    if (calcGP || onlyGP) {
+      ship.gp = calcShipGP(ship, crew);
+    }
+
+    let stats;
+
+    if (!onlyGP) {
+      stats = getShipRawStats(ship, crew);
+      stats = calculateBaseStats(stats, ship.level, ship.defId);
+      stats = formatStats(stats, ship.level, options);
+      stats = renameStats(stats, options);
+
+      ship.stats = stats;
+    }
 
     return stats;
   } catch(e) {
