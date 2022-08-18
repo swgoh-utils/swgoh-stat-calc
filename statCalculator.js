@@ -81,11 +81,11 @@ function calcRosterStats(units, options = {}) {
             mods: unit.mods
           };
           calcCharStats(tempUnit, options);
-          
+
           // assign modified values from calcCharStats back to the original units
           tempUnit.stats && (unit.stats = tempUnit.stats);
           tempUnit.gp && (unit.gp = tempUnit.gp);
-          
+
           count++;
         }
       });
@@ -95,8 +95,8 @@ function calcRosterStats(units, options = {}) {
   return count;
 }
 
-function calcCharStats(char, options = {}) {
-  char = useValuesChar(char, options.useValues);
+function calcCharStats(unit, options = {}) {
+  let char = useValuesChar(unit, options.useValues);
 
   let stats = {};
   if (!options.onlyGP) {
@@ -106,20 +106,20 @@ function calcCharStats(char, options = {}) {
     stats = formatStats(stats, char.level, options);
     stats = renameStats(stats, options);
 
-    char.stats = stats;
+    unit.stats = stats;
   }
 
   if (options.calcGP || options.onlyGP) {
-    char.gp = calcCharGP(char);
-    stats.gp = char.gp;
+    unit.gp = calcCharGP(char);
+    stats.gp = unit.gp;
   }
 
   return stats;
 }
 
-function calcShipStats(ship, crew, options = {}) {
+function calcShipStats(unit, crewMember, options = {}) {
   try {
-    ({ship, crew} = useValuesShip(ship, crew, options.useValues));
+    let {ship, crew} = useValuesShip(unit, crewMember, options.useValues);
 
     let stats = {};
     if (!options.onlyGP) {
@@ -128,12 +128,12 @@ function calcShipStats(ship, crew, options = {}) {
       stats = formatStats(stats, ship.level, options);
       stats = renameStats(stats, options);
 
-      ship.stats = stats;
+      unit.stats = stats;
     }
 
     if (options.calcGP || options.onlyGP) {
-      ship.gp = calcShipGP(ship, crew);
-      stats.gp = ship.gp;
+      unit.gp = calcShipGP(ship, crew);
+      stats.gp = unit.gp;
     }
 
     return stats;
