@@ -1,7 +1,7 @@
 # SWGOH Stat Calculator Readme #
 
 Calculates unit stats for EA's Star Wars: Galaxy of Heroes based on player data.
-Accepted data formats are those found in [swgoh.help's API](http://api.swgoh.help) endpoints, specifically the 'player.roster' object from their `/player` endpoint.
+Accepted data formats are those found in [swgoh-comlink's](https://github.com/swgoh-utils/swgoh-comlink) /player endpoints, specifically the 'player.roster' object.
 
 One additional data format is supported as well -- referred to as 'raw' in this documentation, it's a more 'pure' format based on the objects directly returned by the game's servers.
 
@@ -14,7 +14,7 @@ One additional data format is supported as well -- referred to as 'raw' in this 
 
 #### Initialization ####
 ```js
-const statCalculator = require('swgoh-stat-calc');
+const statCalculator = require('@swgoh-utils/swgoh-stat-calc');
 statCalculator.setGameData( gameData );
 ```
 
@@ -23,13 +23,10 @@ The `statCalculator.js` file is the complete calculator object, and has no depen
 It can run just as well in any browser/system with at least ES6 compatibility.
 If used outside of npm, copy that file to a location your project can access, and adjust the `require()` parameter to point to that file, such as:
 ```js
-const statCalculator = require('./statCalculator.js');
+const statCalculator = require('./index.js');
 ```
 
 ## Methods ##
-
-Examples below make use of the [api-swgoh-help](https://github.com/r3volved/api-swgoh-help/tree/node) package (loaded into variable `swapi`) to collect the raw data.
-See it's documentation to learn more about how to use it to gather this data.
 
 * [.setGameData(gameData)](#setgamedatagamedata)
 * [.calcCharStats(char, options)](#calccharstatschar--options-)
@@ -49,9 +46,8 @@ Can also be used later to update / reassign the game data, if an update is detec
 
 `gameData` *Object*\
 The Obect used by the Stat Calculator to read raw game data.  It requires a specific format.
-An example JSON file of the proper `gameData` object can be found [here](https://swgoh-stat-calc.glitch.me/gameData.json).
-That link should remain active and updated, and thus can be used directly to create the data object.
-To create the object from [swgoh.help's](http://api.swgoh.help) `/data` endpoint, see the code in [dataBuilder.js](https://glitch.com/edit/#!/swgoh-stat-calc?path=statCalc/dataBuilder.js). (A separate package for this code will be created in the future, but for now, it's just hiding in that project).
+An example JSON file of the proper `gameData` object can be found [here](https://github.com/swgoh-utils/gamedata/blob/main/gameData.json).
+
 
 #### Return Value ####
 
@@ -62,9 +58,9 @@ None.
 ```js
 // uses 'node-fetch' for the GET request to retrieve the gameData object
 const fetch = require('node-fetch');
-const statCalculator = require('swgoh-stat-calc');
+const statCalculator = require('@swgoh-utils/swgoh-stat-calc');
 
-let gameData = await (await fetch('https://swgoh-stat-calc.glitch.me/gameData.json')).json();
+let gameData = await (await fetch('https://raw.githubusercontent.com/swgoh-utils/gamedata/refs/heads/main/gameData.json')).json();
 statCalculator.setGameData( gameData );
 ```
 
@@ -626,17 +622,3 @@ Used directly by `.calcRosterStats()`
 
 **Unit**  *single element of* `player.roster`\
 Used directly by `.calcCharStats()` and `.calcShipStats()` (for both the ship and the crew members).
-
-# Changelog #
-
-* Version 1.1.0
-    * Added support for a 'raw' format -- in line with the roster format sent directly by the game, not from [swgoh.help](http://api.swgoh.help).
-    * Exposed the endpoints for calculating GP so they can be called directly.
-* Version 1.0.8
-    * A number of bug fixes
-    * Support for Relic stats (not available in .help's /units endpoint)
-    * Added GP calculations, available only with a `calcGP` flag using `.calcRosterStats()` (and thus also `.calcPlayerStats()`)
-* Version 1.0.1
-    * 'Minor Text Fixes' to this README
-* Version 1.0.0
-    * Initial Release

@@ -1,8 +1,8 @@
 {
-  "name": "swgoh-stat-calc",
-  "version": "1.1.3",
+  "name": "@swgoh-utils/swgoh-stat-calc",
+  "version": "1.0.0",
   "description": "Stat Calculator for Star Wars: Galaxy of Heroes using data from swgoh.help's API",
-  "main": "statCalculator.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,14 +12,18 @@
     "galaxy of heroes",
     "stat calculator"
   ],
-  "author": "Crinolo",
+  "author": "swgoh-utils@proton.me",
+  "contributors": [{
+    "name": "Crinolo",
+    "url": "https://github.com/Crinolo"
+  }],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Crinolo/swgoh-stat-calc.git"
+    "url": "git+https://github.com/swgoh-utils/swgoh-stat-calc.git"
   },
   "bugs": {
-    "url": "https://github.com/Crinolo/swgoh-stat-calc/issues"
+    "url": "https://github.com/swgoh-utils/swgoh-stat-calc/issues"
   },
-  "homepage": "https://github.com/Crinolo/swgoh-stat-calc#readme"
+  "homepage": "https://github.com/swgoh-utils/swgoh-stat-calc#readme"
 }
