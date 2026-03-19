@@ -643,7 +643,9 @@ function calcShipGP(ship, crew = []) {
     gp += gps.level + gps.ability + gps.reinforcement;
   } else { // normal ship calculations
     gp = crew.reduce( (power, c) => power + c.gp, 0);
-    gp *= gpTables.shipRarityFactor[ ship.rarity ] * gpTables.crewSizeFactor[ crew.length ]; // multiply crewPower factors before adding other GP sources
+    // multiply crewPower factors before adding other GP sources
+    gp *= gpTables.shipRarityFactor[ ship.rarity ];
+    gp *= gpTables.crewSizeFactor[ crew.length ];
     gp += gpTables.unitLevelGP[ ship.level ];
     gp = ship.skills.reduce( (power, skill) => power + getSkillGP(ship.defId, skill), gp);
   }
